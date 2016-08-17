@@ -1,3 +1,55 @@
 body {
   background-image: url(../img/background-texture.jpg);
 }
+
+a, p {
+  color:#000;
+  display:block;
+  height:70px;
+  position:relative;
+  text-decoration:none;
+  width:80px;
+  margin: 0;
+}
+
+a {
+  text-shadow:0 1px #fff;
+}
+
+.board-bkgd {
+  background-image: url(../img/marble-back.jpg);
+  width: 54vw;
+  height: 54vw;
+  position: absolute;
+  border-radius: 5px;
+  top:4%;
+  left: 23%;
+  font-size:60px;
+  padding: 2.5vw;
+  display: table;
+}
+
+.chess_board {
+  border:5px solid #333;
+  table-layout:fixed;
+}
+
+.chess_board td {
+  background-image: url(../img/dark-squares.jpg);
+  height:80px;
+  text-align:center;
+  vertical-align:middle;
+  width:80px;
+}
+
+.chess_board tr:nth-child(odd) td:nth-child(even),
+.chess_board tr:nth-child(even) td:nth-child(odd) {
+  background-image: url(../img/light-squares.jpg);
+}
+
+.right-border {
+  border-right: 5px solid #000;
+}
+.top-border {
+  border-top: 5px solid #000;
+}
