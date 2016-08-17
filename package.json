@@ -1,0 +1,11 @@
+{
+  "name": "final_project",
+  "version": "1.0.0",
+  "description": "A web application that allows users to play Chess.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lauren Fay Rosenberg",
+  "license": "ISC"
+}
