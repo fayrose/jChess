@@ -20,7 +20,7 @@
     self.initializeBoard = initializeBoard;
     self.addPiece = addPiece;
     self.addPieces = addPieces;
-    self.startMove = startMove;
+    self.getPossibilities = getPossibilities;
 
     function displayBoard() {
       //For each row
@@ -119,7 +119,7 @@
       }
     }
 
-    function startMove(coordinates) {
+    function getPossibilities(coordinates) {
 
       if (this.board[coordinates[0]][coordinates[1]] !== undefined && this.board[coordinates[0]][coordinates[1]] !== null) {
         //Get piece type and color
@@ -134,9 +134,9 @@
         //Initialize possibilities array
         var possibilities = [];
 
-        //Define potential movement, oriented by player color
-        //Forward for white pieces is 'up', forward for black is 'down'
         for (item in movement) {
+          //Define potential movement, oriented by player color
+          //Forward for white pieces is 'up', forward for black is 'down'
           if (color == "black") {
             var possibility = [coordinates[0] + movement[item][0], coordinates[1] + movement[item][1]];
           } else {
@@ -147,16 +147,17 @@
           var within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
           if (within_bounds) {
 
-            //Checks that either the space is unoccupied, or occupied by a member of the opposite team
-            var not_occupied = self.board[possibility[0]][possibility[1]] == undefined || self.board[possibility[0]][possibility[1]] == null;
-            var opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
-            if (not_occupied || opposite_color) {
+          //Checks that either the space is unoccupied, or occupied by a member of the opposite team
+          var not_occupied = self.board[possibility[0]][possibility[1]] == undefined || self.board[possibility[0]][possibility[1]] == null;
+          var opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
+          if (not_occupied || opposite_color) {
 
-              //Adds passing possibilities to the array
-              possibilities.push(possibility);
+          //Adds passing possibilities to the array
+          possibilities.push(possibility);
             }
           }
         }
+        return possibilities;
     }
   }
 

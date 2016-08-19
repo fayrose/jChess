@@ -32,10 +32,28 @@
 
     }
 
+    function displayPossibilities(possibilities, coordinates) {
+      /*
+      Adds the 'possibility' class to the possible moves of a selected piece, as well
+      as the 'selected' class to the selected piece itself. The possibility class gives a
+      red overlay to a square, and the selected, a gray overlay.
+      */
+      $("#brd"+coordinates[0]+"\\,"+coordinates[1]).addClass("selected");
+      for (i in possibilities) {
+        $("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).addClass("possibility");
+      }
+    }
+
     function startMove(event) {
       var coordinates = this.getCoords(event.target.id);
       if (this.moving == false) {
-        BoardSrv.startMove(coordinates);
+        var possibilities = BoardSrv.getPossibilities(coordinates);
+        displayPossibilities(possibilities, coordinates);
+        this.moving = true;
+      } else {
+        this.moving = false;
+        $(".possibility").removeClass("possibility");
+        $(".selected").removeClass("selected");
       }
 
     }
