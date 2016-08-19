@@ -6,42 +6,43 @@
   function BoardSrv(PieceSrv) {
     self = this;
 
-    //Bind functions
-    self.displayBoard = displayBoard;
-    self.getBoard = getBoard;
-    self.initializeBoard = initializeBoard;
-    self.addPiece = addPiece;
-    self.addPieces = addPieces;
-
     //Creates the board
     self.board = [];
     for (var i=0; i < 8; i++) {
       self.board.push(new Array(8));
     }
 
+    //Bind functions
+    self.pieces = PieceSrv.pieces;
+    self.getPiece = PieceSrv.getPiece;
+    self.displayBoard = displayBoard;
+    self.getBoard = getBoard;
+    self.initializeBoard = initializeBoard;
+    self.addPiece = addPiece;
+    self.addPieces = addPieces;
+    self.startMove = startMove;
+
     function displayBoard() {
-      console.log(self.board);
       //For each row
       for (var i = 0; i < 8; i++) {
         //For each square
         for (var j = 0; j < 8; j++) {
 
           //If the space is not empty, get the color and piece, and display it in that position.
-          if (self.board[i][j] !== undefined) {
+          if (self.board[i][j] !== undefined && self.board[i][j] !== null) {
 
             //Get piece from color and piece names
             var color = self.board[i][j].substring(0, 5);
             var piece_name = self.board[i][j].substring(6);
-            console.log(color + " " + piece_name)
             var piece = PieceSrv.getPiece(piece_name);
-            console.log(piece)
+
             //Display either black or white image
             if (color == "black") {
               var image =  piece.blackImg;
             } else {
              var image = piece.whiteImg;
             }
-            $("#brd"+i+"\\,"+j).html("<a href='#'>"+ image +"</a>");
+            $("#brd"+i+"\\,"+j).html(image);
           }
         }
       }
@@ -118,5 +119,35 @@
       }
     }
 
+    function startMove(coordinates) {
+      //Get piece type
+      if (this.board[coordinates[0]][coordinates[1]] !== undefined && this.board[coordinates[0]][coordinates[1]] !== null) {
+
+        var color = this.board[coordinates[0]][coordinates[1]].substring(0,5);
+        console.log(color);
+        var piece_name = this.board[coordinates[0]][coordinates[1]].substring(6);
+
+        var piece_type = self.getPiece(piece_name);
+
+        //Get piece movement
+        var movement = piece_type.movement;
+        var movement_type =  piece_type.movement_type;
+
+        //Display possibilities
+        var possibilities = [];
+
+        for (item in movement) {
+          if (color == "black") {
+            var possibility = [coordinates[0] + movement[item][0], coordinates[1] + movement[item][1]];
+          } else {
+            var possibility = [coordinates[0] - movement[item][0], coordinates[1] - movement[item][1]];
+          }
+          if (possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8) {
+            possibilities.push(possibility);
+          }
+        }
+        console.log(possibilities);
+    }
   }
-})();
+
+}})();
