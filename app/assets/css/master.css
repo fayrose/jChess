@@ -27,6 +27,7 @@ a {
   font-size:60px;
   padding: 2.5vw;
   display: table;
+  border: 2px solid black;
 }
 
 .chess_board {
