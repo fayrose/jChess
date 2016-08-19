@@ -56,3 +56,33 @@ p {
 .top-border {
   border-top: 5px solid #000;
 }
+
+.selected {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    z-index: 2;`
+}
+
+.selected:before{
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: rgba(0, 0, 0, 0.5);;
+  content: ' ';
+}
+
+.possibility {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    z-index: 2;`
+}
+
+.possibility:before{
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: rgba(225, 0, 0, .5);
+  content: ' ';
+}

@@ -120,33 +120,43 @@
     }
 
     function startMove(coordinates) {
-      //Get piece type
+
       if (this.board[coordinates[0]][coordinates[1]] !== undefined && this.board[coordinates[0]][coordinates[1]] !== null) {
-
+        //Get piece type and color
         var color = this.board[coordinates[0]][coordinates[1]].substring(0,5);
-        console.log(color);
         var piece_name = this.board[coordinates[0]][coordinates[1]].substring(6);
-
         var piece_type = self.getPiece(piece_name);
 
         //Get piece movement
         var movement = piece_type.movement;
         var movement_type =  piece_type.movement_type;
 
-        //Display possibilities
+        //Initialize possibilities array
         var possibilities = [];
 
+        //Define potential movement, oriented by player color
+        //Forward for white pieces is 'up', forward for black is 'down'
         for (item in movement) {
           if (color == "black") {
             var possibility = [coordinates[0] + movement[item][0], coordinates[1] + movement[item][1]];
           } else {
-            var possibility = [coordinates[0] - movement[item][0], coordinates[1] - movement[item][1]];
+            var possibility =  [coordinates[0] - movement[item][0], coordinates[1] - movement[item][1]];
           }
-          if (possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8) {
-            possibilities.push(possibility);
+
+          //Ensures that the possibility is within bounds
+          var within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
+          if (within_bounds) {
+
+            //Checks that either the space is unoccupied, or occupied by a member of the opposite team
+            var not_occupied = self.board[possibility[0]][possibility[1]] == undefined || self.board[possibility[0]][possibility[1]] == null;
+            var opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
+            if (not_occupied || opposite_color) {
+
+              //Adds passing possibilities to the array
+              possibilities.push(possibility);
+            }
           }
         }
-        console.log(possibilities);
     }
   }
 

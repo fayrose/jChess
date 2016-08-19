@@ -8,6 +8,7 @@
     this.initializeBoard = BoardSrv.initializeBoard;
     this.startMove = startMove;
     this.getCoords = getCoords;
+    this.moving = false;
 
     //Creates the initial board.
     this.initializeBoard();
@@ -33,7 +34,9 @@
 
     function startMove(event) {
       var coordinates = this.getCoords(event.target.id);
-      BoardSrv.startMove(coordinates);
+      if (this.moving == false) {
+        BoardSrv.startMove(coordinates);
+      }
 
     }
 
