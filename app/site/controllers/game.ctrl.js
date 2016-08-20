@@ -9,7 +9,6 @@
     //Function bindings
     self.board = BoardSrv.getBoard();
     self.removePiece = BoardSrv.removePiece;
-    console.log(typeof self.removePiece)
     self.addPiece = BoardSrv.addPiece;
     self.initializeBoard = BoardSrv.initializeBoard;
     self.startMove = startMove;
@@ -54,8 +53,6 @@
     function startMove(event) {
       //Gets coordinates of clicked square
       var coordinates = self.getCoords(event.target.id);
-      console.log(coordinates);
-      console.log(self.possibilities)
 
       //If not in the middle of a move, get the possible move of moving the piece at the clicked square.
       if (self.moving == false) {
@@ -70,7 +67,6 @@
             //Gets the selected piece's information
             selected_coords = self.getCoords($(".selected").attr("id"));
             var piece_name = self.board[selected_coords[0]][selected_coords[1]];
-            console.log("Selected Coords: " + selected_coords + "\nPiece name: " + piece_name + "\nCoordinates: " + coordinates)
 
             //Removes the old piece
             BoardSrv.removePiece(selected_coords);

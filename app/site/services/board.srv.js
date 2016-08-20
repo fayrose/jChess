@@ -127,6 +127,18 @@
       }
     }
 
+    function optionValid(possibility, color) {
+      self.within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
+      if (self.within_bounds) {
+        //Checks that either the space is unoccupied, or occupied by a member of the opposite team
+        self.not_occupied = self.board[possibility[0]][possibility[1]] == undefined || self.board[possibility[0]][possibility[1]] == null;
+        self.opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
+        return (self.not_occupied || self.opposite_color);
+      } else {
+        return false;
+      }
+    }
+
     function getPossibilities(coordinates) {
 
       if (this.board[coordinates[0]][coordinates[1]] !== undefined && this.board[coordinates[0]][coordinates[1]] !== null) {
@@ -144,29 +156,37 @@
 
         for (item in movement) {
           //Define potential movement, oriented by player color
-          //Forward for white pieces is 'up', forward for black is 'down'
+          //Forward for white pieces is 'up', forward for black is 'down
+          operators = {
+            "+": function(a, b) {return a + b},
+            "-": function(a, b) {return a - b}
+          }
           if (color == "black") {
-            var possibility = [coordinates[0] + movement[item][0], coordinates[1] + movement[item][1]];
+            var op = "+"
           } else {
-            var possibility =  [coordinates[0] - movement[item][0], coordinates[1] - movement[item][1]];
+            var op = "-"
           }
 
-          //Ensures that the possibility is within bounds
-          var within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
-          if (within_bounds) {
+          var possibility = [operators[op](coordinates[0], movement[item][0]), operators[op](coordinates[1], movement[item][1])];
 
-          //Checks that either the space is unoccupied, or occupied by a member of the opposite team
-          var not_occupied = self.board[possibility[0]][possibility[1]] == undefined || self.board[possibility[0]][possibility[1]] == null;
-          var opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
-          if (not_occupied || opposite_color) {
-
+          if (optionValid(possibility, color)) {
           //Adds passing possibilities to the array
-          possibilities.push(possibility);
+            possibilities.push(possibility);
+          }
+
+          if (movement_type == "infinite") {
+            var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
+            while (self.within_bounds && self.not_occupied) {
+              if (optionValid(possibility, color)) {
+              //Adds passing possibilities to the array
+                possibilities.push(possibility);
+              }
+              var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
             }
           }
         }
+      }
         return possibilities;
     }
-  }
 
 }})();
