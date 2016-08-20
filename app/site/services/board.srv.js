@@ -20,6 +20,7 @@
     self.initializeBoard = initializeBoard;
     self.addPiece = addPiece;
     self.addPieces = addPieces;
+    self.removePiece = removePiece;
     self.getPossibilities = getPossibilities;
 
     function displayBoard() {
@@ -43,6 +44,8 @@
              var image = piece.whiteImg;
             }
             $("#brd"+i+"\\,"+j).html(image);
+          } else {
+            $("#brd"+i+"\\,"+j).html("");
           }
         }
       }
@@ -77,7 +80,12 @@
       }
       for (var i=0; i<num_of_locations; i++) {
         self.addPiece(pieces.locations[i], pieces.name);
+
       }
+    }
+
+    function removePiece(location) {
+      self.board[location[0]][location[1]] = null;
     }
 
     function initializeBoard() {
