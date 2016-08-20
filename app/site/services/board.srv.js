@@ -98,9 +98,9 @@
                     name: "black-knight"};
       black_bishop = {locations: [[0,2], [0,5]],
                     name: "black-bishop"};
-      black_queen = {locations: [[0,3]],
+      black_queen = {locations: [[0,4]],
                     name: "black-queen"};
-      black_king = {locations: [[0,4]],
+      black_king = {locations: [[0,3]],
                     name: 'black-king'};
       black_set = [black_pawn, black_rook, black_knight, black_bishop, black_queen, black_king];
 
@@ -116,9 +116,9 @@
                     name: "white-knight"};
       white_bishop = {locations: [[7,2], [7,5]],
                     name: "white-bishop"};
-      white_queen = {locations: [[7,3]],
+      white_queen = {locations: [[7,4]],
                     name: "white-queen"};
-      white_king = {locations: [[7,4]],
+      white_king = {locations: [[7,3]],
                     name: 'white-king'};
       white_set = [white_pawn, white_rook, white_knight, white_bishop, white_queen, white_king];
 

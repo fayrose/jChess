@@ -27,15 +27,15 @@
     self.LSHORT_FORWARD_LEFT = [1, -2];
 
     self.king = {
-      blackImg: "&#9819;",
-      whiteImg: '&#9813;',
+      blackImg: "&#9818;",
+      whiteImg: '&#9812;',
       movement: [self.FORWARD, self.BACKWARD, self.LEFT, self.RIGHT, self.FORWARD_LEFT, self.FORWARD_RIGHT, self.BACK_LEFT, self.BACK_RIGHT],
       movement_type: "finite",
       pieceName: "king"
     };
     self.queen = {
-      blackImg: "&#9818;",
-      whiteImg: '&#9812;',
+      blackImg: "&#9819;",
+      whiteImg: '&#9813;',
       movement: [self.FORWARD, self.BACKWARD, self.LEFT, self.RIGHT, self.FORWARD_LEFT, self.FORWARD_RIGHT, self.BACK_LEFT, self.BACK_RIGHT],
       movement_type: "infinite",
       pieceName: "queen"
