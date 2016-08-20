@@ -18,7 +18,7 @@ p {
   width: 54vw;
   height: 54vw;
   position: absolute;
-  border-radius: 5px;
+  border-radius: 10px;
   top:2.5%;
   left: 23%;
   font-size:60px;
@@ -31,6 +31,8 @@ p {
   border:5px solid #333;
   table-layout:fixed;
   text-shadow:0 1px #fff;
+  border-radius: 10px;
+  border-collapse: separate !important;
 }
 
 .chess_board p {

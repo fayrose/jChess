@@ -139,9 +139,21 @@
       }
     }
 
-    function getPossibilities(coordinates) {
+    function pawnValid(coordinates, direction) {
+      //Allows pawn to move forward if the space ahead is not occupied
+      if (direction == PieceSrv.FORWARD) {
+        return self.not_occupied;
 
+      //Allows pawn to move diagonally if the space it would like to move to has the opposite color
+      } else if (direction == PieceSrv.FORWARD_LEFT || direction == PieceSrv.FORWARD_RIGHT) {
+        return self.opposite_color;
+      }
+    }
+
+    function getPossibilities(coordinates) {
+      //If the space selected is not empty
       if (this.board[coordinates[0]][coordinates[1]] !== undefined && this.board[coordinates[0]][coordinates[1]] !== null) {
+
         //Get piece type and color
         var color = this.board[coordinates[0]][coordinates[1]].substring(0,5);
         var piece_name = this.board[coordinates[0]][coordinates[1]].substring(6);
@@ -156,8 +168,8 @@
 
         for (item in movement) {
           //Define potential movement, oriented by player color
-          //Forward for white pieces is 'up', forward for black is 'down
-          operators = {
+          //Forward for white pieces is 'up', forward for black is 'down'
+          var operators = {
             "+": function(a, b) {return a + b},
             "-": function(a, b) {return a - b}
           }
@@ -170,8 +182,10 @@
           var possibility = [operators[op](coordinates[0], movement[item][0]), operators[op](coordinates[1], movement[item][1])];
 
           if (optionValid(possibility, color)) {
-          //Adds passing possibilities to the array
-            possibilities.push(possibility);
+            //Adds passing possibilities to the array
+            if (piece_name != "pawn" || (piece_name == "pawn" && pawnValid(coordinates, movement[item]))) {
+              possibilities.push(possibility);
+            }
           }
 
           if (movement_type == "infinite") {

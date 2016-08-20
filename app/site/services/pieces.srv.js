@@ -64,7 +64,7 @@
     self.pawn = {
       blackImg: "&#9823;",
       whiteImg: '&#9817;',
-      movement: [self.FORWARD],
+      movement: [self.FORWARD, self.FORWARD_LEFT, self.FORWARD_RIGHT],
       movement_type: 'finite',
       pieceName: "pawn"
 

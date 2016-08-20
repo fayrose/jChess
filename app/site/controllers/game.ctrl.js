@@ -13,8 +13,14 @@
     self.initializeBoard = BoardSrv.initializeBoard;
     self.startMove = startMove;
     self.getCoords = getCoords;
+
+    //Initialize variables
     self.moving = false;
-    self.possibilities = []
+    self.possibilities = [];
+    self.round = {
+      round_number: 1,
+      current_player: "white"
+    };
 
     //Creates the initial board.
     self.initializeBoard();
@@ -56,9 +62,13 @@
 
       //If not in the middle of a move, get the possible move of moving the piece at the clicked square.
       if (self.moving == false) {
-        self.possibilities = BoardSrv.getPossibilities(coordinates);
-        displayPossibilities(self.possibilities, coordinates);
-        self.moving = true;
+
+        //If the player selects a piece of the current player's color
+        if (self.round.current_player === BoardSrv.board[coordinates[0]][coordinates[1]].substring(0,5)) {
+          self.possibilities = BoardSrv.getPossibilities(coordinates);
+          displayPossibilities(self.possibilities, coordinates);
+          self.moving = true;
+        }
 
       //If in the middle of a move, and one clicks on a possibility, move the piece to the new spot.
       } else {
@@ -76,6 +86,14 @@
 
             //Updates the board
             BoardSrv.displayBoard();
+
+            //Updates the current player and round number
+            if (self.round.current_player === "black") {
+              self.round.current_player = "white";
+              self.round.round_number += 1;
+            } else {
+              self.round.current_player = "black";
+            }
         }}
           //Exits the moving process
           $(".possibility").removeClass("possibility");

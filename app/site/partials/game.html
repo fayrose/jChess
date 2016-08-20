@@ -89,7 +89,7 @@
         <td id="brd7,7" ng-click="ctrl.startMove($event)"></td>
     </tr>
     <tr>
-        <td></td>
+        <td ng-style="{'background-color': ctrl.round.current_player, 'opacity': '0.90', 'background-image': 'none'}" ng-class="{'top-border right-border' : ctrl.round.current_player == 'white'}"></td>
         <td class="top-border"><p>A</p></td>
         <td class="top-border"><p>B</p></td>
         <td class="top-border"><p>C</p></td>
