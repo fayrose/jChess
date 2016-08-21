@@ -21,6 +21,7 @@
     };
 
     //Bind functions
+    self.isEmpty = isEmpty;
     self.displayBoard = displayBoard;
     self.getBoard = getBoard;
     self.addPiece = addPiece;
@@ -32,6 +33,10 @@
     self.pawnValid = pawnValid;
     self.getPossibilities = getPossibilities;
 
+    function isEmpty(coordinates) {
+      return (self.board[coordinates[0]][coordinates[1]] == null || self.board[coordinates[0]][coordinates[1]] == undefined);
+    }
+
     function displayBoard() {
       //For each row
       for (var i = 0; i < 8; i++) {
@@ -39,7 +44,7 @@
         for (var j = 0; j < 8; j++) {
 
           //If the space is not empty, get the color and piece, and display it in that position.
-          if (self.board[i][j] !== undefined && self.board[i][j] !== null) {
+          if (!self.isEmpty([i, j])) {
 
             //Get piece from color and piece names
             var color = self.board[i][j].substring(0, 5);
@@ -154,18 +159,17 @@
       self.within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
       if (self.within_bounds) {
         //Checks that either the space is unoccupied, or occupied by a member of the opposite team
-        self.not_occupied = self.board[possibility[0]][possibility[1]] == undefined || self.board[possibility[0]][possibility[1]] == null;
         self.opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
-        return (self.not_occupied || self.opposite_color);
+        return (self.isEmpty(possibility) || self.opposite_color);
       } else {
         return false;
       }
     }
 
-    function pawnValid(coordinates, direction) {
+    function pawnValid(possibility, direction) {
       //Allows pawn to move forward if the space ahead is not occupied
       if (direction == PieceSrv.FORWARD) {
-        return self.not_occupied;
+        return self.isEmpty(possibility);
 
       //Allows pawn to move diagonally if the space it would like to move to has the opposite color
       } else if (direction == PieceSrv.FORWARD_LEFT || direction == PieceSrv.FORWARD_RIGHT) {
@@ -175,7 +179,7 @@
 
     function getPossibilities(coordinates) {
       //If the space selected is not empty
-      if (this.board[coordinates[0]][coordinates[1]] !== undefined && this.board[coordinates[0]][coordinates[1]] !== null) {
+      if (!this.isEmpty([coordinates[0]][coordinates[1]])) {
 
         //Get piece type and color
         var color = this.board[coordinates[0]][coordinates[1]].substring(0,5);
@@ -206,7 +210,7 @@
 
           if (self.optionValid(possibility, color)) {
             //Adds passing possibilities to the array
-            if (piece_name != "pawn" || (piece_name == "pawn" && self.pawnValid(coordinates, movement[item]))) {
+            if (piece_name != "pawn" || (piece_name == "pawn" && self.pawnValid(possibility, movement[item]))) {
               possibilities.push(possibility);
 
               //Allows pawns to move forward two spaces in the first round.
@@ -220,7 +224,7 @@
           //PIECES THAT CAN MOVE MORE THAN ONE SPOT AT A TIME
           if (movement_type == "infinite") {
             var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
-            while (self.within_bounds && self.not_occupied) {
+            while (self.within_bounds && self.isEmpty(possibility)) {
               if (self.optionValid(possibility, color)) {
               //Adds passing possibilities to the array
                 possibilities.push(possibility);
@@ -235,13 +239,13 @@
         if (piece_name == "king" && self.inInitialPosition(coordinates)) {
           console.log(self.board)
           //If the left rook is in still in the initial position and the in between spots are empty, add the rook to the possibilities
-          if ((self.inInitialPosition([coordinates[0], 0])) && (self.board[coordinates[0]][1] == null || self.board[coordinates[0]][1] == undefined) && (self.board[coordinates[0]][2] == null || self.board[coordinates[0]][2] == undefined)) {
+          if ((self.inInitialPosition([coordinates[0], 0])) && (self.isEmpty([coordinates[0]][1])) && (self.isEmpty([coordinates[0]][2]))) {
             console.log("left side empty")
             var possibility = [coordinates[0], coordinates[1]-3];
             possibilities.push(possibility);
           }
           //If the right rook is still in the initial position and the in between spots are empty, add the rook to the possibilities
-          else if (self.inInitialPosition([coordinates[0], coordinates[1]+4]) && (self.board[coordinates[0]][coordinates[1]+1] == null || self.board[coordinates[0]][coordinates[1]+1] == undefined) && (self.board[coordinates[0]][coordinates[1]+2] == null || self.board[coordinates[0]][coordinates[1]+2] == undefined) && (self.board[coordinates[0]][coordinates[1]+3] == null || self.board[coordinates[0]][coordinates[1]+3] == undefined)) {
+          else if (self.inInitialPosition([coordinates[0], coordinates[1]+4]) && (self.isEmpty([coordinates[0]][4])) && (self.isEmpty([coordinates[0]][5])) && (self.isEmpty([coordinates[0]][6]))) {
             console.log("right side empty")
             var possibility = [coordinates[0], coordinates[1]+4];
             possibilities.push(possibility);
