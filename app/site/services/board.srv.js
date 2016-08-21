@@ -12,15 +12,24 @@
       self.board.push(new Array(8));
     }
 
-    //Bind functions
+    //Create variables
     self.pieces = PieceSrv.pieces;
     self.getPiece = PieceSrv.getPiece;
+    self.round =  {
+      round_number: 1,
+      current_player: "white"
+    };
+
+    //Bind functions
     self.displayBoard = displayBoard;
     self.getBoard = getBoard;
-    self.initializeBoard = initializeBoard;
     self.addPiece = addPiece;
     self.addPieces = addPieces;
     self.removePiece = removePiece;
+    self.initializeBoard = initializeBoard;
+    self.inInitialPosition = inInitialPosition;
+    self.optionValid = optionValid;
+    self.pawnValid = pawnValid;
     self.getPossibilities = getPossibilities;
 
     function displayBoard() {
@@ -102,11 +111,6 @@
                     name: "black-queen"};
       black_king = {locations: [[0,3]],
                     name: 'black-king'};
-      black_set = [black_pawn, black_rook, black_knight, black_bishop, black_queen, black_king];
-
-      for (item in black_set) {
-        self.addPieces(black_set[item]);
-      }
 
       white_pawn = {locations: [[6,0], [6,1], [6,2], [6,3], [6,4], [6,5], [6,6], [6,7]],
                     name: "white-pawn"};
@@ -120,11 +124,30 @@
                     name: "white-queen"};
       white_king = {locations: [[7,3]],
                     name: 'white-king'};
-      white_set = [white_pawn, white_rook, white_knight, white_bishop, white_queen, white_king];
+      self.initial_locations = [black_pawn, black_rook, black_knight, black_bishop, black_queen, black_king, white_pawn, white_rook, white_knight, white_bishop, white_queen, white_king];
 
-      for (item in white_set) {
-        self.addPieces(white_set[item]);
+      for (item in self.initial_locations) {
+        self.addPieces(self.initial_locations[item]);
       }
+    }
+
+    function inInitialPosition(coordinates) {
+      //Get the piece name
+      var piece_name = self.board[coordinates[0]][coordinates[1]];
+      //For each type of piece
+      for (piece in self.initial_locations) {
+        if (piece_name === self.initial_locations[piece].name) {
+
+          //If the location matches
+          for (i in self.initial_locations[piece].locations) {
+
+            if (self.initial_locations[piece].locations[i].toString() == coordinates.toString()) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
     }
 
     function optionValid(possibility, color) {
@@ -181,26 +204,52 @@
 
           var possibility = [operators[op](coordinates[0], movement[item][0]), operators[op](coordinates[1], movement[item][1])];
 
-          if (optionValid(possibility, color)) {
+          if (self.optionValid(possibility, color)) {
             //Adds passing possibilities to the array
-            if (piece_name != "pawn" || (piece_name == "pawn" && pawnValid(coordinates, movement[item]))) {
+            if (piece_name != "pawn" || (piece_name == "pawn" && self.pawnValid(coordinates, movement[item]))) {
               possibilities.push(possibility);
+
+              //Allows pawns to move forward two spaces in the first round.
+              if (piece_name == "pawn" && self.round.round_number == 1) {
+                var possibility = [operators[op](coordinates[0], 2), operators[op](coordinates[1], 0)];
+                possibilities.push(possibility);
+              }
             }
           }
 
+          //PIECES THAT CAN MOVE MORE THAN ONE SPOT AT A TIME
           if (movement_type == "infinite") {
             var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
             while (self.within_bounds && self.not_occupied) {
-              if (optionValid(possibility, color)) {
+              if (self.optionValid(possibility, color)) {
               //Adds passing possibilities to the array
                 possibilities.push(possibility);
               }
               var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
             }
           }
+
         }
-      }
+        //CASTLING
+        //If the selected piece is a king in the initial position
+        if (piece_name == "king" && self.inInitialPosition(coordinates)) {
+          console.log(self.board)
+          //If the left rook is in still in the initial position and the in between spots are empty, add the rook to the possibilities
+          if ((self.inInitialPosition([coordinates[0], 0])) && (self.board[coordinates[0]][1] == null || self.board[coordinates[0]][1] == undefined) && (self.board[coordinates[0]][2] == null || self.board[coordinates[0]][2] == undefined)) {
+            console.log("left side empty")
+            var possibility = [coordinates[0], coordinates[1]-3];
+            possibilities.push(possibility);
+          }
+          //If the right rook is still in the initial position and the in between spots are empty, add the rook to the possibilities
+          else if (self.inInitialPosition([coordinates[0], coordinates[1]+4]) && (self.board[coordinates[0]][coordinates[1]+1] == null || self.board[coordinates[0]][coordinates[1]+1] == undefined) && (self.board[coordinates[0]][coordinates[1]+2] == null || self.board[coordinates[0]][coordinates[1]+2] == undefined) && (self.board[coordinates[0]][coordinates[1]+3] == null || self.board[coordinates[0]][coordinates[1]+3] == undefined)) {
+            console.log("right side empty")
+            var possibility = [coordinates[0], coordinates[1]+4];
+            possibilities.push(possibility);
+          }
+        }
+
+        //RETURNS ALL POSSIBLE MOVES
         return possibilities;
     }
-
+  }
 }})();

@@ -17,10 +17,7 @@
     //Initialize variables
     self.moving = false;
     self.possibilities = [];
-    self.round = {
-      round_number: 1,
-      current_player: "white"
-    };
+    self.round = BoardSrv.round;
 
     //Creates the initial board.
     self.initializeBoard();
@@ -64,7 +61,7 @@
       if (self.moving == false) {
 
         //If the player selects a piece of the current player's color
-        if (self.round.current_player === BoardSrv.board[coordinates[0]][coordinates[1]].substring(0,5)) {
+        if (BoardSrv.round.current_player === BoardSrv.board[coordinates[0]][coordinates[1]].substring(0,5)) {
           self.possibilities = BoardSrv.getPossibilities(coordinates);
           displayPossibilities(self.possibilities, coordinates);
           self.moving = true;
@@ -74,25 +71,65 @@
       } else {
         for (item in self.possibilities) {
           if (self.possibilities[item].toString() === coordinates.toString()) {
-            //Gets the selected piece's information
+            //Gets the old piece's information
             selected_coords = self.getCoords($(".selected").attr("id"));
             var piece_name = self.board[selected_coords[0]][selected_coords[1]];
 
-            //Removes the old piece
-            BoardSrv.removePiece(selected_coords);
+            //If the colors of the old piece and the selected possibility are the same, castle.
+            if (self.board[coordinates[0]][coordinates[1]] != null) {
+              if (self.board[selected_coords[0]][selected_coords[1]].substring(0,5) == self.board[coordinates[0]][coordinates[1]].substring(0,5)) {
+                console.log("Castle selected")
+                //Gets the rook's name
+                var rook_name = self.board[coordinates[0]][coordinates[1]];
 
-            //Adds the new piece
-            BoardSrv.addPiece(coordinates, piece_name);
+                //Removes the old pieces
+                BoardSrv.removePiece(selected_coords);
+                BoardSrv.removePiece(coordinates);
 
-            //Updates the board
-            BoardSrv.displayBoard();
+                //If castling to the left
+                if (coordinates[1] == 0) {
+                  //Adds the new pieces
+                  BoardSrv.addPiece([selected_coords[0], selected_coords[1]-2], piece_name)
+                  BoardSrv.addPiece([coordinates[0], coordinates[1]+2], rook_name)
+                }
+                else if (coordinates[1] == 7)
+                {
+                  //Adds the new pieces
+                  BoardSrv.addPiece([selected_coords[0], selected_coords[1]+2], piece_name)
+                  BoardSrv.addPiece([coordinates[0], coordinates[1]-3], rook_name)
+                }
+
+                //Updates the board
+                BoardSrv.displayBoard();
+              }
+              else {
+                //Removes the old piece
+                BoardSrv.removePiece(selected_coords);
+
+                //Adds the new piece
+                BoardSrv.addPiece(coordinates, piece_name);
+
+                //Updates the board
+                BoardSrv.displayBoard();
+              }
+            }
+            else {
+              //Removes the old piece
+              BoardSrv.removePiece(selected_coords);
+
+              //Adds the new piece
+              BoardSrv.addPiece(coordinates, piece_name);
+
+              //Updates the board
+              BoardSrv.displayBoard();
+            }
 
             //Updates the current player and round number
-            if (self.round.current_player === "black") {
-              self.round.current_player = "white";
-              self.round.round_number += 1;
+            if (BoardSrv.round.current_player === "black") {
+              BoardSrv.round.current_player = "white";
+              BoardSrv.round.round_number += 1;
             } else {
-              self.round.current_player = "black";
+              BoardSrv.round.current_player = "black";
             }
         }}
           //Exits the moving process

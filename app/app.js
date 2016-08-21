@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  
+
   angular
 		.module('chessApp', ['ui.router']);
 
