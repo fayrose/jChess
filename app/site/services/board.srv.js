@@ -179,7 +179,7 @@
 
     function getPossibilities(coordinates) {
       //If the space selected is not empty
-      if (!this.isEmpty([coordinates[0]][coordinates[1]])) {
+      if (!this.isEmpty([coordinates[0], [coordinates[1]]])) {
 
         //Get piece type and color
         var color = this.board[coordinates[0]][coordinates[1]].substring(0,5);
@@ -218,20 +218,21 @@
                 var possibility = [operators[op](coordinates[0], 2), operators[op](coordinates[1], 0)];
                 possibilities.push(possibility);
               }
+
+              //PIECES THAT CAN MOVE MORE THAN ONE SPOT AT A TIME
+              if (movement_type == "infinite") {
+                var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
+                while (self.within_bounds && self.isEmpty(possibility)) {
+                  if (self.optionValid(possibility, color)) {
+                  //Adds passing possibilities to the array
+                    possibilities.push(possibility);
+                  }
+                  var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
+                }
+              }
             }
           }
 
-          //PIECES THAT CAN MOVE MORE THAN ONE SPOT AT A TIME
-          if (movement_type == "infinite") {
-            var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
-            while (self.within_bounds && self.isEmpty(possibility)) {
-              if (self.optionValid(possibility, color)) {
-              //Adds passing possibilities to the array
-                possibilities.push(possibility);
-              }
-              var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
-            }
-          }
 
         }
         //CASTLING
@@ -239,13 +240,13 @@
         if (piece_name == "king" && self.inInitialPosition(coordinates)) {
           console.log(self.board)
           //If the left rook is in still in the initial position and the in between spots are empty, add the rook to the possibilities
-          if ((self.inInitialPosition([coordinates[0], 0])) && (self.isEmpty([coordinates[0]][1])) && (self.isEmpty([coordinates[0]][2]))) {
+          if ((self.inInitialPosition([coordinates[0], 0])) && (self.isEmpty([coordinates[0], 1])) && (self.isEmpty([coordinates[0], 2]))) {
             console.log("left side empty")
             var possibility = [coordinates[0], coordinates[1]-3];
             possibilities.push(possibility);
           }
           //If the right rook is still in the initial position and the in between spots are empty, add the rook to the possibilities
-          else if (self.inInitialPosition([coordinates[0], coordinates[1]+4]) && (self.isEmpty([coordinates[0]][4])) && (self.isEmpty([coordinates[0]][5])) && (self.isEmpty([coordinates[0]][6]))) {
+          else if (self.inInitialPosition([coordinates[0], coordinates[1]+4]) && (self.isEmpty([coordinates[0], 4])) && (self.isEmpty([coordinates[0], 5])) && (self.isEmpty([coordinates[0], 6]))) {
             console.log("right side empty")
             var possibility = [coordinates[0], coordinates[1]+4];
             possibilities.push(possibility);
