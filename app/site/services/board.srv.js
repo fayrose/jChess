@@ -280,25 +280,31 @@
         }
       }
 
+      //console.log(black_king_location)
+
       //Test the opposite player's pieces to see if the king is in any of their possibilities.
       for (var location in black_locations) {
         var possibilities = self.getPossibilities(black_locations[location]);
-        for (index in possibilities) {
+        for (var index in possibilities) {
           if (possibilities[index].toString() == white_king_location.toString()) {
             //Add check class to black_locations[location] and white_king_location
-            $("#brd"+black_locations[location][0]+"\\,"+black_locations[location][1]).addClass("white-check");
-            $("#brd"+white_king_location[0]+"\\,"+white_king_location[1]).addClass("white-check");
+            console.log(black_locations[location])
+            console.log(white_king_location)
+            $("#brd"+black_locations[location][0]+"\\,"+black_locations[location][1]).addClass("whitecheck");
+            $("#brd"+white_king_location[0]+"\\,"+white_king_location[1]).addClass("whitecheck");
             white_inCheck = true;
           }
         }
       }
       for (var location in white_locations) {
         var possibilities = self.getPossibilities(white_locations[location]);
-        for (index in possibilities) {
+        for (var index in possibilities) {
           if (possibilities[index].toString() == black_king_location.toString()) {
             //Add check class to white_locations[location] and black_king_location
-            $("#brd"+white_locations[location][0]+"\\,"+white_locations[location][1]).addClass("black-check");
-            $("#brd"+black_king_location[0]+"\\,"+black_king_location[1]).addClass("black-check");
+            console.log(white_locations[location])
+            console.log(black_king_location)
+            $("#brd"+white_locations[location][0]+"\\,"+white_locations[location][1]).addClass("blackcheck");
+            $("#brd"+black_king_location[0]+"\\,"+black_king_location[1]).addClass("blackcheck");
             black_inCheck = true;
           }
         }

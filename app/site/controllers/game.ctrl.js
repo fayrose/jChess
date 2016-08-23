@@ -115,7 +115,7 @@
             var piece_name = self.board[selected_coords[0]][selected_coords[1]];
 
             //If the colors of the old piece and the selected possibility are the same, castle.
-            if (self.board[coordinates[0]][coordinates[1]] != null) {
+            if (!BoardSrv.isEmpty(coordinates)) {
 
               if (self.board[selected_coords[0]][selected_coords[1]].substring(0,5) == self.board[coordinates[0]][coordinates[1]].substring(0,5)) {
                 self.castle(coordinates, selected_coords);
@@ -144,7 +144,7 @@
           $(".possibility").removeClass("possibility");
           $(".selected").removeClass("selected");
           self.moving = false;
-
+          BoardSrv.inCheck();
       }
 
     }
