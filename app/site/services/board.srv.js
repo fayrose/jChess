@@ -30,6 +30,8 @@
     self.movePiece = movePiece;
     self.initializeBoard = initializeBoard;
     self.inInitialPosition = inInitialPosition;
+    self.inCheck = inCheck;
+    self.inCheckmate = inCheckmate;
     self.optionValid = optionValid;
     self.pawnValid = pawnValid;
     self.getPossibilities = getPossibilities;
@@ -134,18 +136,18 @@
       @param new_location: Array (length == 2), coordinates of the location the piece will be moved to
       */
 
-      piece = self.board[old_location[0]][old_location[1]];
+      var piece = self.board[old_location[0]][old_location[1]];
+
 
       //Get the correct piece type
-      for (type in self.current_locations) {
+      for (var type in self.current_locations) {
         if (self.current_locations[type].name == piece) {
-
           //Find current location of said piece
-          for (location in self.current_locations[type].locations) {
+          for (var location in self.current_locations[type].locations) {
             if (self.current_locations[type].locations[location].toString() == old_location.toString()) {
 
               //update location tracker
-              self.current_locations[type_index].locations[location_index] = new_location;
+              self.current_locations[type].locations[location] = new_location;
             }
           }
 
@@ -153,7 +155,7 @@
       }
 
       removePiece(old_location);
-      addPiece(new_location);
+      addPiece(new_location, piece);
       displayBoard();
     }
 
@@ -250,6 +252,69 @@
         }
       }
       return false;
+    }
+
+    function inCheck() {
+      var black_locations = [];
+      var white_locations = [];
+      var black_inCheck = false;
+      var white_inCheck = false;
+
+      //Get pieces' locations.
+      for (var type in self.current_locations) {
+        if (self.current_locations[type].name == "white-king") {
+          var white_king_location = self.current_locations[type].locations[0]
+        }
+        else if (self.current_locations[type].name == "black-king") {
+          var black_king_location = self.current_locations[type].locations[0]
+        }
+        else if (self.current_locations[type].name.substring(0,5) == "black") {
+          for (location in self.current_locations[type].locations) {
+            black_locations.push( self.current_locations[type].locations[location])
+          }
+        }
+        else if (self.current_locations[type].name.substring(0,5) == "white") {
+          for (location in self.current_locations[type].locations) {
+            white_locations.push(self.current_locations[type].locations[location])
+          }
+        }
+      }
+
+      //Test the opposite player's pieces to see if the king is in any of their possibilities.
+      for (var location in black_locations) {
+        var possibilities = self.getPossibilities(black_locations[location]);
+        for (index in possibilities) {
+          if (possibilities[index].toString() == white_king_location.toString()) {
+            //Add check class to black_locations[location] and white_king_location
+            $("#brd"+black_locations[location][0]+"\\,"+black_locations[location][1]).addClass("white-check");
+            $("#brd"+white_king_location[0]+"\\,"+white_king_location[1]).addClass("white-check");
+            white_inCheck = true;
+          }
+        }
+      }
+      for (var location in white_locations) {
+        var possibilities = self.getPossibilities(white_locations[location]);
+        for (index in possibilities) {
+          if (possibilities[index].toString() == black_king_location.toString()) {
+            //Add check class to white_locations[location] and black_king_location
+            $("#brd"+white_locations[location][0]+"\\,"+white_locations[location][1]).addClass("black-check");
+            $("#brd"+black_king_location[0]+"\\,"+black_king_location[1]).addClass("black-check");
+            black_inCheck = true;
+          }
+        }
+      }
+
+      //If the king not in check, remove the check class from them.
+      if (!white_inCheck) {
+        $(".white-check").removeClass("white-check");
+      }
+      if (!black_inCheck) {
+        $(".white-check").removeClass("white-check");
+      }
+    }
+
+    function inCheckmate() {
+
     }
 
     function optionValid(possibility, color) {

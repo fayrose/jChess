@@ -10,6 +10,7 @@
     self.board = BoardSrv.getBoard();
     self.removePiece = BoardSrv.removePiece;
     self.addPiece = BoardSrv.addPiece;
+    self.castle = castle;
     self.initializeBoard = BoardSrv.initializeBoard;
     self.startMove = startMove;
     self.getCoords = getCoords;
@@ -46,6 +47,9 @@
       Adds the 'possibility' class to the possible moves of a selected piece, as well
       as the 'selected' class to the selected piece itself. The possibility class gives a
       red overlay to a square, and the selected, a gray overlay.
+
+      @param possibilities: Array, all of the potential spaces a piece could moves
+      @param coordinates: Array (length == 2), the coordinates of the piece selected to move
       */
       $("#brd"+coordinates[0]+"\\,"+coordinates[1]).addClass("selected");
       for (i in possibilities) {
@@ -53,7 +57,41 @@
       }
     }
 
+    function castle(coordinates, selected_coords) {
+      /*
+      Checks to see the direction of the castle, and moves the king and rook accordingly.
+
+      @param coordinates: Array (length == 2), The location of the rook.
+      @param selected_coords: Array (length == 2), The location of the king.
+      */
+      //Gets the rook's name
+      var rook_name = self.board[coordinates[0]][coordinates[1]];
+      //If castling to the left
+      if (coordinates[1] == 0) {
+        //Moves the pieces
+        BoardSrv.movePiece(selected_coords, [selected_coords[0], selected_coords[1]-2]);
+        BoardSrv.movePiece(coordinates, [coordinates[0], coordinates[1]+2]);
+      }
+      //If castling to the right
+      else if (coordinates[1] == 7)
+      {
+        //Moves the pieces
+        BoardSrv.movePiece(selected_coords, [selected_coords[0], selected_coords[1]+2]);
+        BoardSrv.movePiece(coordinates, [coordinates[0], coordinates[1]-3]);
+      }
+
+      //Updates the board
+      BoardSrv.displayBoard();
+    }
+
     function startMove(event) {
+      /*
+      Allows the user to move a piece. Takes in a click event, and if the piece is not currently moving, initializes a move.
+      If the player is currently moving and clicks on a potential spot, moves the previously selected piece to the clicked possibility.
+
+      @param event: Click event.
+      */
+
       //Gets coordinates of clicked square
       var coordinates = self.getCoords(event.target.id);
 
@@ -71,41 +109,24 @@
       } else {
         for (item in self.possibilities) {
           if (self.possibilities[item].toString() === coordinates.toString()) {
+
             //Gets the old piece's information
             var selected_coords = self.getCoords($(".selected").attr("id"));
             var piece_name = self.board[selected_coords[0]][selected_coords[1]];
 
             //If the colors of the old piece and the selected possibility are the same, castle.
             if (self.board[coordinates[0]][coordinates[1]] != null) {
+
               if (self.board[selected_coords[0]][selected_coords[1]].substring(0,5) == self.board[coordinates[0]][coordinates[1]].substring(0,5)) {
-
-                //Gets the rook's name
-                var rook_name = self.board[coordinates[0]][coordinates[1]];
-                //If castling to the left
-                if (coordinates[1] == 0) {
-                  //Moves the pieces
-                  BoardSrv.movePiece(selected_coords, [selected_coords[0], selected_coords[1]-2]);
-                  BoardSrv.movePiece(coordinates, [coordinates[0], coordinates[1]+2]);
-                }
-                //If castling to the right
-                else if (coordinates[1] == 7)
-                {
-                  //Moves the pieces
-                  BoardSrv.movePiece(selected_coords, [selected_coords[0], selected_coords[1]+2]);
-                  BoardSrv.movePiece(coordinates, [coordinates[0], coordinates[1]-3]);
-                }
-
-                //Updates the board
-                BoardSrv.displayBoard();
+                self.castle(coordinates, selected_coords);
               }
-
               else {
                 //Moves the piece
                 BoardSrv.movePiece(selected_coords, coordinates);
               }
 
             }
-            
+
             else {
               //Moves the piece
               BoardSrv.movePiece(selected_coords, coordinates);
@@ -123,6 +144,7 @@
           $(".possibility").removeClass("possibility");
           $(".selected").removeClass("selected");
           self.moving = false;
+
       }
 
     }
