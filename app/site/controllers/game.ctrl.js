@@ -72,56 +72,43 @@
         for (item in self.possibilities) {
           if (self.possibilities[item].toString() === coordinates.toString()) {
             //Gets the old piece's information
-            selected_coords = self.getCoords($(".selected").attr("id"));
+            var selected_coords = self.getCoords($(".selected").attr("id"));
             var piece_name = self.board[selected_coords[0]][selected_coords[1]];
 
             //If the colors of the old piece and the selected possibility are the same, castle.
             if (self.board[coordinates[0]][coordinates[1]] != null) {
               if (self.board[selected_coords[0]][selected_coords[1]].substring(0,5) == self.board[coordinates[0]][coordinates[1]].substring(0,5)) {
-                console.log("Castle selected")
+
                 //Gets the rook's name
                 var rook_name = self.board[coordinates[0]][coordinates[1]];
-
-                //Removes the old pieces
-                BoardSrv.removePiece(selected_coords);
-                BoardSrv.removePiece(coordinates);
-
                 //If castling to the left
                 if (coordinates[1] == 0) {
-                  //Adds the new pieces
-                  BoardSrv.addPiece([selected_coords[0], selected_coords[1]-2], piece_name)
-                  BoardSrv.addPiece([coordinates[0], coordinates[1]+2], rook_name)
+                  //Moves the pieces
+                  BoardSrv.movePiece(selected_coords, [selected_coords[0], selected_coords[1]-2]);
+                  BoardSrv.movePiece(coordinates, [coordinates[0], coordinates[1]+2]);
                 }
+                //If castling to the right
                 else if (coordinates[1] == 7)
                 {
-                  //Adds the new pieces
-                  BoardSrv.addPiece([selected_coords[0], selected_coords[1]+2], piece_name)
-                  BoardSrv.addPiece([coordinates[0], coordinates[1]-3], rook_name)
+                  //Moves the pieces
+                  BoardSrv.movePiece(selected_coords, [selected_coords[0], selected_coords[1]+2]);
+                  BoardSrv.movePiece(coordinates, [coordinates[0], coordinates[1]-3]);
                 }
 
                 //Updates the board
                 BoardSrv.displayBoard();
               }
+
               else {
-                //Removes the old piece
-                BoardSrv.removePiece(selected_coords);
-
-                //Adds the new piece
-                BoardSrv.addPiece(coordinates, piece_name);
-
-                //Updates the board
-                BoardSrv.displayBoard();
+                //Moves the piece
+                BoardSrv.movePiece(selected_coords, coordinates);
               }
+
             }
+            
             else {
-              //Removes the old piece
-              BoardSrv.removePiece(selected_coords);
-
-              //Adds the new piece
-              BoardSrv.addPiece(coordinates, piece_name);
-
-              //Updates the board
-              BoardSrv.displayBoard();
+              //Moves the piece
+              BoardSrv.movePiece(selected_coords, coordinates);
             }
 
             //Updates the current player and round number

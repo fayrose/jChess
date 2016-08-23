@@ -27,6 +27,7 @@
     self.addPiece = addPiece;
     self.addPieces = addPieces;
     self.removePiece = removePiece;
+    self.movePiece = movePiece;
     self.initializeBoard = initializeBoard;
     self.inInitialPosition = inInitialPosition;
     self.optionValid = optionValid;
@@ -34,10 +35,25 @@
     self.getPossibilities = getPossibilities;
 
     function isEmpty(coordinates) {
+      /*
+      Returns true if the space at the given coordinates is empty.
+
+      @param coordinates: Array (length == 2), location of the piece to test
+      @returns: Boolean, whether the space is empty.
+      */
+
       return (self.board[coordinates[0]][coordinates[1]] == null || self.board[coordinates[0]][coordinates[1]] == undefined);
     }
 
     function displayBoard() {
+      /*
+      Converts the self.board array to display the present board in the partial.
+
+      @params: none.
+      @returns: none.
+
+      */
+
       //For each row
       for (var i = 0; i < 8; i++) {
         //For each square
@@ -79,6 +95,7 @@
 
       addPiece([0, 0], "black-pawn") --> board[0][0] = "black-pawn"
       */
+
       self.board[location[0]][location[1]] = name;
     }
 
@@ -88,6 +105,7 @@
 
       @param pieces: Object. Has attributes 'locations' (Array of arrays), and 'name' (String)
       */
+
       num_of_locations = pieces.locations;
       if (num_of_locations) {
         num_of_locations = pieces.locations.length;
@@ -99,10 +117,82 @@
     }
 
     function removePiece(location) {
+      /*
+      Removes a piece from the board
+
+      @param location: Array (length == 2), coordinates of the piece to remove
+      */
+
       self.board[location[0]][location[1]] = null;
     }
 
+    function movePiece(old_location, new_location) {
+      /*
+      Moves a piece from one spot to another, and updates the location of the piece in self.current_locations.
+
+      @param old_location: Array (length == 2), coordinates of the piece's initial location
+      @param new_location: Array (length == 2), coordinates of the location the piece will be moved to
+      */
+
+      piece = self.board[old_location[0]][old_location[1]];
+
+      //Get the correct piece type
+      for (type in self.current_locations) {
+        if (self.current_locations[type].name == piece) {
+
+          //Find current location of said piece
+          for (location in self.current_locations[type].locations) {
+            if (self.current_locations[type].locations[location].toString() == old_location.toString()) {
+
+              //update location tracker
+              self.current_locations[type_index].locations[location_index] = new_location;
+            }
+          }
+
+        }
+      }
+
+      removePiece(old_location);
+      addPiece(new_location);
+      displayBoard();
+    }
+
+    function takePiece(piece_location) {
+      /*
+      When a piece takes a piece from the opposite team by moving to the second piece's location,
+      removes the taken piece from the list of current locations, as it no longer exists.
+
+      @param piece_location: Array (length == 2), location of piece to remove
+      */
+
+      //Get the correct piece type
+      var piece = self.board[piece_location[0]][piece_location[1]]
+
+      //Iterate through the array to find the correct piece type.
+      for (type in self.current_locations) {
+        if (self.current_locations[type].name == piece) {
+
+          //Find current location of said piece
+          for (i = self.current_locations[type].locations.length; i >= 0; i--) {
+            if (self.current_locations[type].locations[i].toString() == piece_location.toString()) {
+
+              //Removes the location of the piece from the list of piece locations
+              self.current_locations[type].locations.splice(i, 1);
+            }
+          }
+
+        }
+      }
+
+    }
+
     function initializeBoard() {
+      /*
+      Creates the initial board by adding the pieces in the initial locations, as well as creating the location tracker.
+
+      No params.
+      */
+
       //Defines locations of initial pieces
       black_pawn = {locations: [[1,0], [1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [1,7]],
                     name: "black-pawn"};
@@ -130,6 +220,7 @@
       white_king = {locations: [[7,3]],
                     name: 'white-king'};
       self.initial_locations = [black_pawn, black_rook, black_knight, black_bishop, black_queen, black_king, white_pawn, white_rook, white_knight, white_bishop, white_queen, white_king];
+      self.current_locations = JSON.parse(JSON.stringify(self.initial_locations));
 
       for (item in self.initial_locations) {
         self.addPieces(self.initial_locations[item]);
@@ -137,6 +228,12 @@
     }
 
     function inInitialPosition(coordinates) {
+      /*
+      Returns true if the piece at the coordinates given is a piece in the same position as at the start of the game.
+
+      @param coordinates: Array (length == 2), location of the piece to test
+      */
+
       //Get the piece name
       var piece_name = self.board[coordinates[0]][coordinates[1]];
       //For each type of piece
@@ -156,6 +253,14 @@
     }
 
     function optionValid(possibility, color) {
+      /*
+      Returns true if the possibility being tested is within the bounds of the board,
+      as well as either being an empty space or a piece from the opposite player.
+
+      @param possibility: Array (length == 2), the space a piece could potentially move
+      @param color: String, the color of the current team
+      */
+
       self.within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
       if (self.within_bounds) {
         //Checks that either the space is unoccupied, or occupied by a member of the opposite team
@@ -167,6 +272,14 @@
     }
 
     function pawnValid(possibility, direction) {
+      /*
+      Allows the pawn to move Forward if the space in front of it is not empty,
+      and allows the pawn to move diagonally if it could potentially take a piece.
+
+      @param possibility: Array (length == 2), the space a piece could potentially move
+      @direction: Array (length == 2), the direction that the possibility is in relation to the initial piece
+      */
+
       //Allows pawn to move forward if the space ahead is not occupied
       if (direction == PieceSrv.FORWARD) {
         return self.isEmpty(possibility);
@@ -178,6 +291,13 @@
     }
 
     function getPossibilities(coordinates) {
+      /*
+      Returns the potential locations that a piece could move.
+
+      @param coordinates: Array (length == 2), location of the piece to test
+      @returns possibilities: Array, list of coordinates the piece could move
+      */
+
       //If the space selected is not empty
       if (!this.isEmpty([coordinates[0], [coordinates[1]]])) {
 
@@ -257,4 +377,6 @@
         return possibilities;
     }
   }
+
+
 }})();
