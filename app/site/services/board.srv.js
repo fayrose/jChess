@@ -15,6 +15,7 @@
     //Create variables
     self.pieces = PieceSrv.pieces;
     self.getPiece = PieceSrv.getPiece;
+    self.within_bounds = function(possibility) {return possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8};
     self.round =  {
       round_number: 1,
       current_player: "white"
@@ -44,8 +45,12 @@
       @param coordinates: Array (length == 2), location of the piece to test
       @returns: Boolean, whether the space is empty.
       */
-
-      return (self.board[coordinates[0]][coordinates[1]] == null || self.board[coordinates[0]][coordinates[1]] == undefined);
+      if (coordinates[0] < 8 && coordinates[1] < 8 && coordinates[0] >= 0 && coordinates[1] >= 0) {
+        return (self.board[coordinates[0]][coordinates[1]] == null || self.board[coordinates[0]][coordinates[1]] == undefined);
+      }
+      else {
+        return 0
+      }
     }
 
     function displayBoard() {
@@ -263,30 +268,53 @@
       @param possibilities: Array, list of potential moves a piece could make.
       @param selected_coords: Array (length == 2), the piece that is currently being moved.
       */
+      puts_black_in_check = [];
+      puts_white_in_check = [];
+      var hold_piece = false;
+
       for (var possibility in possibilities) {
+        if (!self.isEmpty([possibilities[possibility], possibilities[possibility]])
+            || self.board[possibilities[possibility][0]][possibilities[possibility][1]] !== undefined
+        ) {
+          var hold_piece = self.board[possibilities[possibility][0]][possibilities[possibility][1]];
+        }
         //Move piece in each direction that it can.
         movePiece(selected_coords, possibilities[possibility]);
 
         var in_check = inCheck()
-        console.log(in_check);
         //If either king is in check for the given position, put the appropriate class on it.
         if (in_check[0] || in_check[1]) {
           if (in_check[0]) {
             movePiece(possibilities[possibility], selected_coords);
+            if (hold_piece) {
+              self.board[possibilities[possibility][0]][possibilities[possibility][1]] = hold_piece;
+            }
             $(".blackcheck").removeClass("blackcheck")
             $("#brd" + possibilities[possibility][0] + "\\," + possibilities[possibility][1]).addClass('blackcheck');
+            puts_black_in_check.push(possibilities[possibility]);
+            self.displayBoard()
           }
           else {
             movePiece(possibilities[possibility], selected_coords);
+            if (hold_piece) {
+              self.board[possibilities[possibility][0]][possibilities[possibility][1]] = hold_piece;
+            }
             $(".blackcheck").removeClass("whitecheck")
             $("#brd" + possibilities[possibility][0] + "\\," + possibilities[possibility][1]).addClass('whitecheck');
+            puts_white_in_check.push(possibilities[possibility]);
+            self.displayBoard()
           }
 
         } else {
           movePiece(possibilities[possibility], selected_coords);
+          if (hold_piece) {
+            self.board[possibilities[possibility][0]][possibilities[possibility][1]] = hold_piece;
+            self.displayBoard()
+          }
         }
 
       }
+      return [puts_black_in_check, puts_white_in_check];
     }
 
     function inCheck() {
@@ -350,17 +378,38 @@
 
       //If the king not in check, remove the check class from them.
       if (!white_inCheck) {
-        $(".white-check").removeClass("white-check");
+        $(".whitecheck").removeClass("whitecheck");
       }
       if (!black_inCheck) {
-        $(".white-check").removeClass("white-check");
+        $(".blackcheck").removeClass("blackcheck");
       }
 
       return [black_inCheck, white_inCheck]
     }
 
     function inCheckmate() {
+      /*
+      Tests to see if the king is in checkmate by testing if both the location he is in
+      as well as all locations he could move are in check.
+      */
+      for (var type in self.current_locations) {
+        if (self.current_locations[type].name == "white-king") {
+          var white_king_location = self.current_locations[type].locations[0]
+        }
+        else if (self.current_locations[type].name == "black-king") {
+          var black_king_location = self.current_locations[type].locations[0]
+        }
+      }
+      puts_white_in_check = possibilityInCheck(getPossibilities(white_king_location), white_king_location)[1];
+      puts_black_in_check = possibilityInCheck(getPossibilities(black_king_location), black_king_location)[0];
 
+      if (inCheck()[1] && getPossibilities(white_king_location) == puts_white_in_check && getPossibilities(white_king_location).length > 0) {
+        return "white";
+      } else if (inCheck()[0] && getPossibilities(black_king_location) == puts_black_in_check && getPossibilities(black_king_location).length > 0) {
+        return "black";
+      } else {
+        return false;
+      }
     }
 
     function optionValid(possibility, color) {
@@ -372,8 +421,7 @@
       @param color: String, the color of the current team
       */
 
-      self.within_bounds = possibility[0] >= 0 && possibility[0] < 8 && possibility[1] >= 0 && possibility[1] < 8;
-      if (self.within_bounds) {
+      if (self.within_bounds(possibility)) {
         //Checks that either the space is unoccupied, or occupied by a member of the opposite team
         self.opposite_color = self.board[possibility[0]][possibility[1]] && self.board[possibility[0]][possibility[1]].substring(0,5) !== color;
         return (self.isEmpty(possibility) || self.opposite_color);
@@ -424,19 +472,19 @@
         //Initialize possibilities array
         var possibilities = [];
 
-        for (item in movement) {
-          //Define potential movement, oriented by player color
-          //Forward for white pieces is 'up', forward for black is 'down'
-          var operators = {
-            "+": function(a, b) {return a + b},
-            "-": function(a, b) {return a - b}
-          }
-          if (color == "black") {
-            var op = "+"
-          } else {
-            var op = "-"
-          }
+        //Define potential movement, oriented by player color
+        //Forward for white pieces is 'up', forward for black is 'down'
+        var operators = {
+          "+": function(a, b) {return a + b},
+          "-": function(a, b) {return a - b}
+        }
+        if (color == "black") {
+          var op = "+"
+        } else {
+          var op = "-"
+        }
 
+        for (item in movement) {
           var possibility = [operators[op](coordinates[0], movement[item][0]), operators[op](coordinates[1], movement[item][1])];
 
           if (self.optionValid(possibility, color)) {
@@ -453,12 +501,29 @@
               //PIECES THAT CAN MOVE MORE THAN ONE SPOT AT A TIME
               if (movement_type == "infinite") {
                 var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
-                while (self.within_bounds && self.isEmpty(possibility)) {
+                console.log(possibility);
+
+                function checkIfOpponent(square, color) {
+                  console.log(square, color);
+                  if (typeof square !== 'string') return false;
+                  return square.substring(0,5) !== color;
+                }
+
+                while (self.within_bounds(possibility) && (self.isEmpty(possibility))) {
+
                   if (self.optionValid(possibility, color)) {
                   //Adds passing possibilities to the array
                     possibilities.push(possibility);
                   }
                   var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
+                }
+                if (self.within_bounds(possibility)) {
+                  if (checkIfOpponent(self.board[possibility[0]][possibility[1]], color)) {
+                    if (self.optionValid(possibility, color)) {
+                    //Adds passing possibilities to the array
+                      possibilities.push(possibility);
+                    }
+                  }
                 }
               }
             }
@@ -469,7 +534,6 @@
         //CASTLING
         //If the selected piece is a king in the initial position
         if (piece_name == "king" && self.inInitialPosition(coordinates)) {
-          console.log(self.board)
           //If the left rook is in still in the initial position and the in between spots are empty, add the rook to the possibilities
           if ((self.inInitialPosition([coordinates[0], 0])) && (self.isEmpty([coordinates[0], 1])) && (self.isEmpty([coordinates[0], 2]))) {
             console.log("left side empty")

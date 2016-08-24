@@ -53,9 +53,8 @@
       */
       $("#brd"+coordinates[0]+"\\,"+coordinates[1]).addClass("selected");
       for (i in possibilities) {
-        if (!$("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).hasClass("blackcheck") && !$("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).hasClass("whitecheck")) {
-          $("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).addClass("possibility");
-        }
+        $("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).addClass("possibility");
+
       }
 
 
