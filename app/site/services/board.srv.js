@@ -356,7 +356,6 @@
         var possibilities = self.getPossibilities(black_locations[location]);
         for (var index in possibilities) {
           if (possibilities[index].toString() == white_king_location.toString()) {
-            console.log('white king check')
             //Add check class to black_locations[location] and white_king_location
             $("#brd"+black_locations[location][0]+"\\,"+black_locations[location][1]).addClass("whitecheck");
             $("#brd"+white_king_location[0]+"\\,"+white_king_location[1]).addClass("whitecheck");
@@ -384,6 +383,9 @@
         $(".blackcheck").removeClass("blackcheck");
       }
 
+      $(".blackcheck:empty").removeClass("blackcheck");
+      $(".whitecheck:empty").removeClass("whitecheck");
+
       return [black_inCheck, white_inCheck]
     }
 
@@ -400,12 +402,15 @@
           var black_king_location = self.current_locations[type].locations[0]
         }
       }
+
       puts_white_in_check = possibilityInCheck(getPossibilities(white_king_location), white_king_location)[1];
       puts_black_in_check = possibilityInCheck(getPossibilities(black_king_location), black_king_location)[0];
 
-      if (inCheck()[1] && getPossibilities(white_king_location) == puts_white_in_check && getPossibilities(white_king_location).length > 0) {
+      possibilityInCheck(getPossibilities(white_king_location), white_king_location)
+
+      if (inCheck()[1] && puts_white_in_check.length == getPossibilities(white_king_location).length && getPossibilities(white_king_location).length > 0) {
         return "white";
-      } else if (inCheck()[0] && getPossibilities(black_king_location) == puts_black_in_check && getPossibilities(black_king_location).length > 0) {
+      } else if (inCheck()[0] && puts_black_in_check.length == getPossibilities(black_king_location).length && getPossibilities(black_king_location).length > 0) {
         return "black";
       } else {
         return false;
@@ -458,11 +463,10 @@
       */
 
       //If the space selected is not empty
-      if (!this.isEmpty([coordinates[0], [coordinates[1]]])) {
-
+      if (!self.isEmpty([coordinates[0], [coordinates[1]]])) {
         //Get piece type and color
-        var color = this.board[coordinates[0]][coordinates[1]].substring(0,5);
-        var piece_name = this.board[coordinates[0]][coordinates[1]].substring(6);
+        var color = self.board[coordinates[0]][coordinates[1]].substring(0,5);
+        var piece_name = self.board[coordinates[0]][coordinates[1]].substring(6);
         var piece_type = self.getPiece(piece_name);
 
         //Get piece movement
@@ -501,10 +505,8 @@
               //PIECES THAT CAN MOVE MORE THAN ONE SPOT AT A TIME
               if (movement_type == "infinite") {
                 var possibility = [operators[op](possibility[0], movement[item][0]), operators[op](possibility[1], movement[item][1])];
-                console.log(possibility);
 
                 function checkIfOpponent(square, color) {
-                  console.log(square, color);
                   if (typeof square !== 'string') return false;
                   return square.substring(0,5) !== color;
                 }
@@ -536,13 +538,11 @@
         if (piece_name == "king" && self.inInitialPosition(coordinates)) {
           //If the left rook is in still in the initial position and the in between spots are empty, add the rook to the possibilities
           if ((self.inInitialPosition([coordinates[0], 0])) && (self.isEmpty([coordinates[0], 1])) && (self.isEmpty([coordinates[0], 2]))) {
-            console.log("left side empty")
             var possibility = [coordinates[0], coordinates[1]-3];
             possibilities.push(possibility);
           }
           //If the right rook is still in the initial position and the in between spots are empty, add the rook to the possibilities
           else if (self.inInitialPosition([coordinates[0], coordinates[1]+4]) && (self.isEmpty([coordinates[0], 4])) && (self.isEmpty([coordinates[0], 5])) && (self.isEmpty([coordinates[0], 6]))) {
-            console.log("right side empty")
             var possibility = [coordinates[0], coordinates[1]+4];
             possibilities.push(possibility);
           }

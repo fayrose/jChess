@@ -11,6 +11,7 @@
     self.removePiece = BoardSrv.removePiece;
     self.addPiece = BoardSrv.addPiece;
     self.castle = castle;
+    self.endGame = endGame;
     self.initializeBoard = BoardSrv.initializeBoard;
     self.startMove = startMove;
     self.getCoords = getCoords;
@@ -87,6 +88,10 @@
       BoardSrv.displayBoard();
     }
 
+    function endGame() {
+      console.log("GAME OVER!")
+    }
+
     function startMove(event) {
       /*
       Allows the user to move a piece. Takes in a click event, and if the piece is not currently moving, initializes a move.
@@ -149,6 +154,13 @@
           $(".selected").removeClass("selected");
           self.moving = false;
           BoardSrv.inCheck();
+          if (BoardSrv.inCheck()[0] || BoardSrv.inCheck()[1]) {
+            console.log('passes check')
+            if (BoardSrv.inCheckmate() != false) {
+              console.log("checkmate")
+              self.endGame();
+            }
+          }
       }
 
     }
