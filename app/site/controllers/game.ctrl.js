@@ -53,8 +53,12 @@
       */
       $("#brd"+coordinates[0]+"\\,"+coordinates[1]).addClass("selected");
       for (i in possibilities) {
-        $("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).addClass("possibility");
+        if (!$("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).hasClass("blackcheck") && !$("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).hasClass("whitecheck")) {
+          $("#brd"+possibilities[i][0]+"\\,"+possibilities[i][1]).addClass("possibility");
+        }
       }
+
+
     }
 
     function castle(coordinates, selected_coords) {
@@ -102,6 +106,7 @@
         if (BoardSrv.round.current_player === BoardSrv.board[coordinates[0]][coordinates[1]].substring(0,5)) {
           self.possibilities = BoardSrv.getPossibilities(coordinates);
           displayPossibilities(self.possibilities, coordinates);
+          BoardSrv.possibilityInCheck(self.possibilities, coordinates);
           self.moving = true;
         }
 

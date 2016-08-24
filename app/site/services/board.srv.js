@@ -30,6 +30,7 @@
     self.movePiece = movePiece;
     self.initializeBoard = initializeBoard;
     self.inInitialPosition = inInitialPosition;
+    self.possibilityInCheck = possibilityInCheck;
     self.inCheck = inCheck;
     self.inCheckmate = inCheckmate;
     self.optionValid = optionValid;
@@ -95,7 +96,7 @@
       @param location: Array with length of 2,
       @param name: String
 
-      addPiece([0, 0], "black-pawn") --> board[0][0] = "black-pawn"
+      addPiece([0, 0], "black-pawn") --> self.board[0][0] = "black-pawn"
       */
 
       self.board[location[0]][location[1]] = name;
@@ -254,7 +255,48 @@
       return false;
     }
 
+    function possibilityInCheck(possibilities, selected_coords) {
+      /*
+      Displays whether a potential move would result in a piece being in check by adding
+      a red overlay to the potential move that would do so.
+
+      @param possibilities: Array, list of potential moves a piece could make.
+      @param selected_coords: Array (length == 2), the piece that is currently being moved.
+      */
+      for (var possibility in possibilities) {
+        //Move piece in each direction that it can.
+        movePiece(selected_coords, possibilities[possibility]);
+
+        var in_check = inCheck()
+        console.log(in_check);
+        //If either king is in check for the given position, put the appropriate class on it.
+        if (in_check[0] || in_check[1]) {
+          if (in_check[0]) {
+            movePiece(possibilities[possibility], selected_coords);
+            $(".blackcheck").removeClass("blackcheck")
+            $("#brd" + possibilities[possibility][0] + "\\," + possibilities[possibility][1]).addClass('blackcheck');
+          }
+          else {
+            movePiece(possibilities[possibility], selected_coords);
+            $(".blackcheck").removeClass("whitecheck")
+            $("#brd" + possibilities[possibility][0] + "\\," + possibilities[possibility][1]).addClass('whitecheck');
+          }
+
+        } else {
+          movePiece(possibilities[possibility], selected_coords);
+        }
+
+      }
+    }
+
     function inCheck() {
+      /*
+      Tests to see if either of the kings are currently in check.
+
+      @params: none.
+      @returns: none.
+      */
+
       var black_locations = [];
       var white_locations = [];
       var black_inCheck = false;
@@ -280,16 +322,14 @@
         }
       }
 
-      //console.log(black_king_location)
 
       //Test the opposite player's pieces to see if the king is in any of their possibilities.
       for (var location in black_locations) {
         var possibilities = self.getPossibilities(black_locations[location]);
         for (var index in possibilities) {
           if (possibilities[index].toString() == white_king_location.toString()) {
+            console.log('white king check')
             //Add check class to black_locations[location] and white_king_location
-            console.log(black_locations[location])
-            console.log(white_king_location)
             $("#brd"+black_locations[location][0]+"\\,"+black_locations[location][1]).addClass("whitecheck");
             $("#brd"+white_king_location[0]+"\\,"+white_king_location[1]).addClass("whitecheck");
             white_inCheck = true;
@@ -301,8 +341,6 @@
         for (var index in possibilities) {
           if (possibilities[index].toString() == black_king_location.toString()) {
             //Add check class to white_locations[location] and black_king_location
-            console.log(white_locations[location])
-            console.log(black_king_location)
             $("#brd"+white_locations[location][0]+"\\,"+white_locations[location][1]).addClass("blackcheck");
             $("#brd"+black_king_location[0]+"\\,"+black_king_location[1]).addClass("blackcheck");
             black_inCheck = true;
@@ -317,6 +355,8 @@
       if (!black_inCheck) {
         $(".white-check").removeClass("white-check");
       }
+
+      return [black_inCheck, white_inCheck]
     }
 
     function inCheckmate() {
