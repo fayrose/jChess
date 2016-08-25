@@ -83,7 +83,7 @@
             }
             $("#brd"+i+"\\,"+j).html(image);
           } else {
-            $("#brd"+i+"\\,"+j).html("");
+            $("#brd"+i+"\\,"+j).empty();
           }
         }
       }

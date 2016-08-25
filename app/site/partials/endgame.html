@@ -1,0 +1,8 @@
+<div>
+	<h2>The {{ctrl.winner}} player has won!<h2>
+	<h4>Click continue if you would like to play again, otherwise, press cancel.</h4>
+	<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click='closeThisDialog()'>Cancel</button>
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click='closeThisDialog(); ctrl.newGame()'>Play Again</button>
+  </div>
+</div>

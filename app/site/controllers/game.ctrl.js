@@ -3,7 +3,7 @@
       .module("chessApp")
       .controller("GameCtrl", GameCtrl)
 
-  function GameCtrl(BoardSrv, $scope, PieceSrv) {
+  function GameCtrl(BoardSrv, $scope, PieceSrv , ngDialog, $state) {
     var self = this;
 
     //Function bindings
@@ -15,14 +15,26 @@
     self.initializeBoard = BoardSrv.initializeBoard;
     self.startMove = startMove;
     self.getCoords = getCoords;
+    self.newGame = newGame;
 
     //Initialize variables
     self.moving = false;
     self.possibilities = [];
     self.round = BoardSrv.round;
+    self.winner = "";
 
     //Creates the initial board.
     self.initializeBoard();
+
+    //Initializes pop-up on application start
+    $scope.openStartPage = function() {
+		ngDialog.open({template: '/site/partials/start.html',
+		  scope: $scope,
+      className: 'ngdialog-theme-default'
+		})
+	   };
+
+    $scope.openStartPage();
 
     //Watches the board array for updates
     $scope.$watch("BoardSrv.board", function() {
@@ -88,8 +100,35 @@
       BoardSrv.displayBoard();
     }
 
-    function endGame() {
-      console.log("GAME OVER!")
+    function clearBoard() {
+      BoardSrv.board = [];
+      for (var i=0; i < 8; i++) {
+        BoardSrv.board.push(new Array(8));
+      }
+    }
+
+    function newGame() {
+      $state.reload();
+      clearBoard();
+      BoardSrv.displayBoard();
+      console.log(self.board)
+    }
+
+    function endGame(winner) {
+      self.winner = winner;
+      $scope.openEndPage = function() {
+  		ngDialog.openConfirm({template: '/site/partials/endgame.html',
+  		  scope: $scope,
+        className: 'ngdialog-theme-default'
+      }).then(
+        function(response) {
+          if (response == "Play Again") {
+            $route.reload();
+          }
+        }
+      )
+  	  };
+      $scope.openEndPage();
     }
 
     function startMove(event) {
@@ -155,10 +194,8 @@
           self.moving = false;
           BoardSrv.inCheck();
           if (BoardSrv.inCheck()[0] || BoardSrv.inCheck()[1]) {
-            console.log('passes check')
             if (BoardSrv.inCheckmate() != false) {
-              console.log("checkmate")
-              self.endGame();
+              self.endGame(BoardSrv.inCheckmate());
             }
           }
       }

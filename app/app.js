@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-		.module('chessApp', ['ui.router']);
+		.module('chessApp', ['ui.router', 'ngDialog']);
 
 	angular
 		.module('chessApp')
