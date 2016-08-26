@@ -1,0 +1,170 @@
+<div class="instructions">
+  <div class="center">
+  {{ctrl.instructionsPage}} of 11
+  </div>
+  <div ng-show="ctrl.instructionsPage == 1">
+    <h3>The Goal of Chess</h3>
+    <p>
+      You and your opponent are each in charge of an army. Your goal: to catch the other army's king (before they catch yours)! When you have him attacked and he can no longer escape, it's called "checkmate," and you win!
+    </p>
+    <br>
+    <p>
+      You each start with a trusty army of 16: the King, Queen, two Rooks, two Bishops, two Knights, and eight Pawns.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 2">
+    <h3>Starting a Game</h3>
+    <p>
+      At the beginning of the game the chessboard is laid out so that each player has the white (or light) color square in the bottom right-hand side. The chess pieces are then arranged the same way each time. The second row (or rank) is filled with pawns. The rooks go in the corners, then the knights next to them, followed by the bishops, and finally the queen, who always goes on her own matching color (white queen on white, black queen on black), and the king on the remaining square.
+    </p>
+    <br>
+    <p>
+      The player with the white pieces always moves first, so it's only fair to take turns playing white and black. On each turn you get to move one of your pieces (except for one special move). Then it's your opponent's turn. And back and forth, you take turns until one of the kings is cornered... or your whole army is tired out!
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 3">
+    <h3>How the Chess Pieces Move</h3>
+    <p>
+      Each of the 6 different kinds of pieces has its own shape for moving. Most pieces cannot move through other pieces-- only the knight can jump over anyone who gets in his way! Also no piece can ever move onto a square with one of their own pieces. However, they can be moved to take the place of an opponent's piece: that's how you capture the enemies!
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 4">
+    <h3>The King</h3>
+    <h1 class="center">&#9818;  &#9812;</h1>
+    <p>
+      The king is the most important piece, since losing him means the end of the game. But he is also one of the weakest. So very often he needs his friends to protect him. The king can move one square in any direction - up, down, to the sides, and diagonally.
+    </p>
+    <p>
+      The king may never move himself onto a square where he could be captured (no losing on purpose). If your opponent ever moves their king onto a square where you can take it, don't grab the king and laugh "hahahaha, I win!" Instead, you should explain why they can't move there. Then your opponent can put the king back where it was, and choose a different move.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 5">
+    <h3>Check and Checkmate</h3>
+    <p>
+      When another piece threatens to capture the king, it is called 'check.' When there is no way for the king to escape check, it is called 'checkmate.' As stated before, that is how you win. There are only three ways a king can get out of check: move out of the way, block the check with another piece, or capture the piece threatening the king. If a king cannot escape checkmate then the game is over. Customarily the king is not captured or removed from the board, the game is simply declared over.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 6">
+    <h3>The Queen</h3>
+    <h1 class="center">&#9819; &#9813;</h1>
+    <p>
+      The queen is the most powerful piece. Like the king, she can move in any one straight direction - forward, backward, sideways, or diagonally - but unlike him, she's very speedy. In fact, she can move as far as you like as long as she does not move through any other pieces. And, like with all pieces, if the queen captures an opponent's piece, that's the square she stops on.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 7">
+    <h3>The Rook</h3>
+    <h1 class="center">&#9820; &#9814;</h1>
+    <p>
+      The rook moves much like the queen: as far as it wants along straight lines, but only forward, backward, and to the sides (not diagonally).
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 8">
+    <h3>The Bishop</h3>
+    <h1 class="center">&#9821; &#9815;</h1>
+    <p>
+      The bishop is the "other half" of the queen. It moves as far as it wants, but only diagonally. You start with one bishop on a light square and one bishop on a dark square, and you will notice, only moving on diagonals, each one is stuck on the color it starts on. Bishops work well together because each covers the squares the other one can't.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 9">
+    <h3>The Knight</h3>
+    <h1 class="center">&#9822; &#9816;</h1>
+    <p>
+      Knights move in a very different way from the other pieces - going two squares in one direction, and then one more move at a 90 degree angle, just like the shape of an "L". Knights are also the only pieces that can move over other pieces. People often say knights "hop" because of that special ability.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 10">
+    <h1 class="center">&#9823; &#9817;</h1>
+    <h3>The Pawn</h3>
+    <p>
+      Half of your starting team is pawns, so it's very important to understand how to use these little guys, even though they are not very strong. Pawns are unusual because they move in one way, but capture in a different way. When they move, they just go forward, but when they capture they go diagonally. Pawns can only move forward one square at a time, except for their very first move where they can move forward two squares or one. Pawns can only capture one square diagonally in front of them. They can never move or capture backwards.
+    </p>
+    <p>
+      Because they move and capture differently, the pawn is the only piece that can get blocked by enemy pieces: if there is another piece directly in front of a pawn he cannot move past or capture that piece.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ctrl.changePage(1)">NEXT</button>
+    </div>
+  </div>
+
+  <div ng-show="ctrl.instructionsPage == 11">
+    <h3>Castling</h3>
+    <p>
+      One other special rule is called castling, the only time you can move two pieces in one move. This combination move allows you to do two important things all in one turn: get your king to safety (hopefully), and get your rook out of the corner and into the game. On a player's turn he may move his king two squares over to one side and then move the rook to the other side of his king. (See the example below.) In order to castle, however, the following conditions must be met:
+    </p>
+    <ul>
+      <li>The king must be in its initial position</li>
+      <li>The rook must be in its initial position</li>
+      <li>There cannot be any pieces between the king and the rook.</li>
+      <li>The king may not be in check.</li>
+    </ul>
+    <p>
+      Notice that when you castle one direction the king is closer to the side of the board. That is called kingside. Castling to the other side, through where the queen sat, is called castling queenside. Regardless of which side, the king always moves exactly two squares when castling.
+    </p>
+    <p>
+      In order to castle, click the King while these conditions are met. The rook will appear as an option of movement.
+    </p>
+    <br>
+    <div class="ngdialog-buttons">
+      <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="ctrl.changePage(-1)">PREVIOUS</button>
+      <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog()">CLOSE</button>
+    </div>
+  </div>
+
+
+</div>

@@ -4,21 +4,27 @@
     <meta charset="utf-8">
     <title>jChess</title>
 
+    <!--Import Fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
     <!--Import CSS-->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/ngDialog.min.css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="assets/css/ngDialog-theme-default.min.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="assets/css/drawer.min.css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="assets/css/master.css" media="screen" title="no title" charset="utf-8">
 
   </head>
-  <body ng-app="chessApp">
-      <div ui-view></div>
+  <body ng-app="chessApp" class="drawer drawer--left">
+    <div ui-view></div>
 
     <!--Import libraries-->
     <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="assets/js/iscroll.min.js"></script>
     <script type="text/javascript" src="assets/js/angular.min.js"></script>
     <script type="text/javascript" src="assets/js/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="assets/js/ngDialog.min.js"></script>
+    <script type="text/javascript" src="assets/js/drawer.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 
     <!--Import app.js file-->

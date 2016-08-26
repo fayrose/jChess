@@ -37,6 +37,8 @@
     self.optionValid = optionValid;
     self.pawnValid = pawnValid;
     self.getPossibilities = getPossibilities;
+    self.loadGame = loadGame;
+    self.saveGame = saveGame;
 
     function isEmpty(coordinates) {
       /*
@@ -553,5 +555,17 @@
     }
   }
 
+  function saveGame() {
+    localStorage.setItem('board', JSON.stringify(self.board));
+    localStorage.setItem("round", JSON.stringify(self.round));
+  }
+
+  function loadGame() {
+    if (localStorage.getItem('board') && localStorage.getItem("round")) {
+      self.board = JSON.parse(localStorage.getItem('board'));
+      self.round = JSON.parse(localStorage.getItem("round"));
+      self.displayBoard();
+    }
+  }
 
 }})();

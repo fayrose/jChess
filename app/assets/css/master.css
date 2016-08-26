@@ -117,3 +117,52 @@ p {
   background-color: rgba(255, 0, 0, .35);
   content: ' ';
 }
+
+.drawer-nav, .drawer-nav a {
+  background-color: #1a1a1a;
+  color: white;
+  font-family: Roboto, sans-serif;
+}
+
+.drawer-menu li a{
+  padding-left: 3em;
+  font-size: 1em;
+}
+
+.drawer-menu li h2{
+  padding-left: 1vw;
+}
+
+.nav-img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+}
+.drawer-hamburger-icon, .drawer-hamburger-icon:after, .drawer-hamburger-icon:before {
+  background-color: white;
+}
+.drawer-hamburger .menu-name{
+  color: white;
+  margin-bottom: 10px;
+}
+.drawer-nav {
+  width: 30.25rem;
+}
+
+.drawer--left .drawer-nav {
+  left: -30.25rem;
+}
+
+.instructions p {
+  width: inherit;
+  height: auto;
+}
+
+.instructions h1 {
+  font-size: 5em;
+}
+
+.center {
+  text-align: center;
+}

@@ -6,16 +6,23 @@
   function GameCtrl(BoardSrv, $scope, PieceSrv , ngDialog, $state) {
     var self = this;
 
-    //Function bindings
+    //Import functions from service
     self.board = BoardSrv.getBoard();
     self.removePiece = BoardSrv.removePiece;
     self.addPiece = BoardSrv.addPiece;
+    self.saveGame = saveGame;
+    self.loadGame = loadGame;
+    self.getInstructions = getInstructions;
+    self.initializeBoard = BoardSrv.initializeBoard;
+
+    //Function bindings
     self.castle = castle;
     self.endGame = endGame;
-    self.initializeBoard = BoardSrv.initializeBoard;
     self.startMove = startMove;
     self.getCoords = getCoords;
     self.newGame = newGame;
+    self.changePage = changePage;
+
 
     //Initialize variables
     self.moving = false;
@@ -23,6 +30,27 @@
     self.round = BoardSrv.round;
     self.winner = "";
 
+    //Configure Navigation drawer
+    angular.element(document).ready(function () {
+       $('.drawer').drawer();
+    })
+    $('.drawer').drawer({
+      class: {
+        nav: 'drawer-nav',
+        toggle: 'drawer-toggle',
+        overlay: 'drawer-overlay',
+        open: 'drawer-open',
+        close: 'drawer-close',
+        dropdown: 'drawer-dropdown'
+      },
+      iscroll: {
+        // Configuring the iScroll
+        // https://github.com/cubiq/iscroll#configuring-the-iscroll
+        mouseWheel: true,
+        preventDefault: false
+      },
+      showOverlay: true
+    });
     //Creates the initial board.
     self.initializeBoard();
 
@@ -40,6 +68,12 @@
     $scope.$watch("BoardSrv.board", function() {
       BoardSrv.displayBoard();
     })
+
+    function changePage(amount) {
+      if (self.instructionsPage + amount > 0 && self.instructionsPage + amount < 12) {
+        self.instructionsPage += amount;
+      }
+    }
 
     function getCoords(id) {
       /*
@@ -108,8 +142,13 @@
     }
 
     function newGame() {
+      $('.drawer').drawer('close');
       $state.reload();
       clearBoard();
+      BoardSrv.round =  {
+        round_number: 1,
+        current_player: "white"
+      };
       BoardSrv.displayBoard();
       console.log(self.board)
     }
@@ -129,6 +168,41 @@
       )
   	  };
       $scope.openEndPage();
+    }
+
+    function saveGame() {
+      BoardSrv.saveGame()
+      $scope.gameSaved = function() {
+      ngDialog.open({template: '/site/partials/saved.html',
+        scope: $scope,
+        className: 'ngdialog-theme-default'
+      })
+       };
+
+      $scope.gameSaved();
+    }
+
+    function loadGame() {
+      BoardSrv.loadGame()
+      $scope.gameLoaded = function() {
+      ngDialog.open({template: '/site/partials/loaded.html',
+        scope: $scope,
+        className: 'ngdialog-theme-default'
+      })
+       };
+
+      $scope.gameLoaded();
+    }
+
+    function getInstructions() {
+      self.instructionsPage = 1;
+      $scope.howToPlay = function() {
+      ngDialog.open({template: '/site/partials/instructions.html',
+        scope: $scope,
+        className: 'ngdialog-theme-default'
+        })
+       };
+      $scope.howToPlay();
     }
 
     function startMove(event) {
